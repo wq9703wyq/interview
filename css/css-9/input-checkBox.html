@@ -1,0 +1,61 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: 鹿角兔子
+ * @Date: 2021-09-14 16:57:38
+ * @LastEditors: 鹿角兔子
+ * @LastEditTime: 2021-09-14 17:12:08
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <form action="" method="get">
+    您喜欢的水果？<br /><br />
+    <label><input name="Fruit" type="checkbox" value="" />苹果 </label>
+    <label><input name="Fruit" type="checkbox" value="" />桃子 </label>
+    <label><input name="Fruit" type="checkbox" value="" />香蕉 </label>
+    <label><input name="Fruit" type="checkbox" value="" class="checkBox" />梨 </label>
+  </form>
+</body>
+
+</html>
+
+<style>
+  input[type='checkbox'] {
+    cursor: pointer;
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    font-size: 0.9rem;
+    visibility: hidden;
+  }
+
+  input[type='checkbox']::after {
+    position: absolute;
+    top: 0;
+    background-color: #33d883;
+    color: #fff;
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    visibility: visible;
+    padding-left: 0px;
+    text-align: center;
+    content: ' ';
+    border-radius: 50%;
+  }
+
+  input[type='checkbox']:checked::after {
+    content: '✓';
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+</style>

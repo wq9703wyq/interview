@@ -1,0 +1,17 @@
+#container {
+  height: 400px;
+  background: red;
+  position: relative;
+}
+
+.p-1 {
+  position: absolute;
+  top: 50%;
+  margin-top: -100px;
+  background-color: yellow;
+}
+
+.p-2 {
+  margin: 0 auto;
+  background-color: blue;
+}

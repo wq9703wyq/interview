@@ -1,0 +1,19 @@
+#container {
+  position: relative;
+  height: 400px;
+  background: red;
+}
+.p-1 {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 0;
+  background-color: yellow;
+}
+.p-2 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  background-color: blue;
+}

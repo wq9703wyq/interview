@@ -1,0 +1,105 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: 鹿角兔子
+ * @Date: 2021-09-17 18:16:08
+ * @LastEditors: 鹿角兔子
+ * @LastEditTime: 2021-09-18 00:26:38
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="bfc" id="bfc">
+    <div class="BFC-son son"></div>
+    <div class="BFC-son son"></div>
+    <div class="son"></div>
+    <div class="BFC-son son"></div>
+    <div class="son"></div>
+    <div class="son"></div>
+    <button id="active">BFC中的子元素与"和父元素同级元素"不会发生margin折叠</button>
+  </div>
+  <button id="active_float_contianer_2_BFC">BFC 会清除内部Box浮动</button>
+  <div id="float_contianer">
+    <div id="float">
+      <button id="active_float">become float</button>
+    </div>
+    <div id="float_contianer-bfc">
+      <button id="active_float_contianer-bfc">BFC 不会与 float 的元素重叠</button>
+    </div>
+    <div class="float">here is float</div>
+  </div>
+</body>
+<script>
+  document.getElementById("active").addEventListener("click", () => {
+    const BFC_son = document.getElementsByClassName("BFC-son");
+    const bfc = document.getElementById("bfc");
+    [...BFC_son].forEach(item => {
+      let BFC_contianer = document.createElement("div");
+      BFC_contianer.setAttribute("class", "bfc_contianer");
+      item.textContent = "in bfc"
+      bfc.insertBefore(BFC_contianer, item);
+      BFC_contianer.appendChild(item);
+    })
+  })
+  document.getElementById("active_float").addEventListener("click", () => {
+    document.getElementById("float").setAttribute("style", "float: left")
+  })
+  document.getElementById("active_float_contianer_2_BFC").addEventListener("click", () => {
+    document.getElementById("float_contianer").setAttribute("style", "overflow: hidden")
+  })
+  document.getElementById("active_float_contianer-bfc").addEventListener("click", () => {
+    document.getElementById("float_contianer-bfc").setAttribute("style", "overflow: hidden")
+  })
+</script>
+
+</html>
+
+<style lang="scss">
+  .bfc {
+    /* display: inline-block; */
+    overflow: hidden;
+    margin: 50px auto;
+    background-color: rosybrown;
+  }
+
+  .bfc_contianer {
+    overflow: hidden;
+  }
+
+  .son {
+    width: 200px;
+    height: 100px;
+    margin: 50px;
+    background: red;
+    color: beige;
+    font-size: 20px;
+  }
+
+  #float_contianer {
+    background-color: rosybrown;
+  }
+
+  #float_contianer-bfc {
+    width: 200px;
+    height: 100px;
+    background: red;
+  }
+
+  #float {
+    background: blue;
+    color: beige;
+  }
+  .float {
+    float: left;
+    background: blue;
+    color: beige;
+  }
+</style>
