@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-13 22:22:28
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-18 00:28:28
+ * @LastEditTime: 2021-09-20 17:10:15
 -->
 
 1. ## p标签默认的 display 和 position 属性分别是什么
@@ -46,9 +46,9 @@
  <span class="span-2">text2</span>
 </p>
 ```
-- >
+- > [link](./css-4.html)
 
-5. ## 重绘和重排
+1. ## 重绘和重排
 - > ### 重排
    
    - > 当DOM的变化影响了元素的几何信息(位置与大小)，浏览器需要重新计算DOM的几何属性并重新排位，这就是重排
@@ -91,3 +91,13 @@
     1. > 设置transition: 10s，用js修改他的margin或者left；可拓性较强，可以任意设置动画的移动方向与距离，并且搭配transform使用不改变其他元素布局，减少重排带来的消耗；动画细节不容易控制，例如速度曲线，又或者transition是对大部分样式都有影响，若一起设置移动500px和变宽200px，结果就会变成变移动边变宽，除非js设置先后顺序
     2. > css3动画，可以设置动画时间、播放状态、播放次数、结束状态和预设时间曲线，且可以控制动画每一个时间点元素的属性效果
     3. > 纯JS控制，通过setTimeOut、setInterval在极短时间内去定期延修改元素属性，可控性比较强，但是相比功能差不多的css3动画不仅工作量更大，JS不断对元素修改属性会造成多次重绘重排对客户端压力较大
+13. ## 外边距重叠
+
+    1. > ### [同一层相邻元素之间](./margin-coalesce/example-1.html)
+    2. > ###  [没用内容将父元素和后代元素分开](./margin-coalesce/example-2.html)
+         - > 没有 border-top、padding-top、行内内容 **(存在溢出子元素前的非空元素)** 以及本身非BFC则会使子元素的 margin-top 溢出到父级元素外
+         - > 没有 border-bottom、padding-bottom、行内内容 **(存在溢出子元素后的非空元素)** 、height **(设定值高于子元素高度与子元素margin-bottom之和)**、min-height **(与height同理)** 以及本身非BFC则会使子元素的margin-bottom 溢出到父级元素外
+   
+      - > 参与折叠边距中若包含负值，折叠后的外边距取最大的正边距和最小的负边距之和；例如-13px 8px 100px 叠在一起，则取100 - 13 = 87px
+      - 如果参与折叠的外边距都为负，则取最小负边距的值
+      - 外边距重叠只会发生在 Block-Level 的元素，floating 和 absolutely positioned 的元素则不会发生外边距重叠

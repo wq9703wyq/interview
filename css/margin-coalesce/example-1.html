@@ -1,0 +1,69 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: 鹿角兔子
+ * @Date: 2021-09-20 16:04:53
+ * @LastEditors: 鹿角兔子
+ * @LastEditTime: 2021-09-20 16:16:23
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="example" id="example-1">
+    <p>下边界范围会...</p>
+    <p>...会跟这个元素的上边界范围重叠。</p>
+  </div>
+
+  <div class="example" id="example-2">
+    <header>上边界重叠 87</header>
+    <main></main>
+    <footer>下边界重叠 87 不能再高了</footer>
+  </div>
+</body>
+
+</html>
+
+<style>
+  .example {
+    border: 20px solid cadetblue;
+    margin: 20px auto;
+    /* padding: 100px; */
+    /* background: cadetblue; */
+  }
+
+  #example-1::before {
+    display: block;
+    content: "同一层相邻元素之间";
+    color: cadetblue;
+    font-weight: 800;
+  }
+
+  p:nth-child(1) {
+    margin-bottom: 13px;
+  }
+
+  p:nth-child(2) {
+    margin-top: 87px;
+  }
+
+  section {
+    margin-top: 13px;
+    margin-bottom: 87px;
+  }
+
+  header {
+    margin-top: 87px;
+  }
+
+  footer {
+    margin-bottom: 13px;
+  }
+</style>
