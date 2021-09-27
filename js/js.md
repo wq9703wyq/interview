@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-14 18:42:07
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-24 23:32:05
+ * @LastEditTime: 2021-09-28 00:08:04
 -->
 - [x] call、bind、apply手写
 - [x] 手写节流、防抖
@@ -64,7 +64,7 @@
          > 每一个 declarative Environment Record 和代码中的某段 scope 紧密相关，这段 scope 中包含各种定义的变量、常量或者函数的语法：variable、constant、let、class、module、import、functions。
 
          1. ### Function Environment Record
-            > ![pic](../assets/Function_Environment_Record.jpeg)
+            > ![pic](../assets/pic/Function_Environment_Record.jpeg)
             > Function Environment Record 代表是一个函数的顶层作用域
                > > - 如果函数不是 箭头函数，那么 env 就会提供 this 绑定  
                > > - 如果函数不是 箭头函数，并且内部引用了 super 调用父类，那么 env 还会包含 super 所需要的父类状态
@@ -77,10 +77,28 @@
             >> - 绑定对象本身和继承的属性都会被 Object env 绑定为标识符  
             >> - 绑定对象的属性增减也会导致 Object env 的标识符绑定发生变化，通过这种新增对象属性所导致的绑定都是可变绑定(即使该属性不可写)
       3. ## Global Environment Record
-         > ![pic](../assets/pic/Global_Environment_Record.es.jpeg)  
+          ![pic](../assets/pic/Global_Environment_Record.es.jpeg)  
           - Global Environment Record 代表是最外层的作用域，它提供几种绑定: 内置的全局对象，全局对象的属性和script元素内的所有顶层声明  
           - Global Environment Record在逻辑上是一个单独的env，但是在标准定义中，它其实是一个 object Environment Record和 declarative Environment Record的组合体。  
             - object Environment Record包含了全部的内置全局变量，我们代码中经常会出现的NaN，undefined，Infinity，还有parseInt, parseFloat方法，等等，这些都是包含在这个Environment Record的绑定之中的。结合with语句的使用（with语句所创建的就是一个object env），我们就可以明白在代码中为什么可以直接写NaN，而不需要写global.NaN。
             - 除了这些内置的全局变量之外，object Environment Record中还包括以下这些语法所声明的绑定：函数声明、generator函数声明、异步函数声明（async）、异步generator函数声明和var声明。
             - 除了上述的情况之外，其他在全局环境中的声明都包含在了declarative Environment Record中，例如全局环境下的let, const，class语句。
 
+9. ## [原型]()
+   > ### Each **constructor** is a function that has a property named "prototype" that is used to implement *prototype-based inheritance* and *shared properties*.
+       每一个[构造函数](#constructor)都有一个叫 **prototyoe** 的属性用于基于原型的继承和共享属性。<br/>
+
+   <br/>
+
+   > ### Every object created by a constructor has an implicit reference (called the object's prototype) to the value of its constructor's "**prototype**" property. Furthermore, a prototype may have a non-null implicit reference to its prototype, and so on; this is called the prototype chain. 
+       所有由构造函数创造的对象都有一个隐式引用(\_\_proto__)指向构造函数的 **prototype** 属性。并且，一个 **prototype** 也拥有一个非空的隐式引用(\_\_proto__)指向构建该**prototype**对象的构造函数的**prototype**，这就是原型链
+   
+10. ## [<span id="constructor">构造函数</span>]()
+   > ### A function object is an object that supports the [[Call]] internal method. A constructor is an object that supports the [[Construct]] internal method. Every object that supports [[Construct]] must support [[Call]]; that is, every constructor must be a function object. Therefore, a constructor may also be referred to as a *constructor function* or *constructor function object*.  
+     一个函数对象是支持内部[[Call]]方法的对象。**constructor** 是一个支持内部[[Construct]]方法的对象。每一个支持[[Construct]]的对象都必定支持[[Call]]，也就是说每一个 **constructor** 都是一个函数对象。因此一个 **constructor** 可以称作 *constructor function* 或者 *constructor function object*
+11. ## 古典继承
+    1.  [盗用构造函数继承](./classical-extend/constructor-stealing.js)
+    2.  [原型继承](./classical-extend/prototype-extend.js)
+    3.  [组合继承](./classical-extend/combination-extend.js)
+    4.  [寄生式继承](./classical-extend/parasitic-inheritance.js)
+    5.  [寄生组合继承](./classical-extend/parasitic-combination.js)
