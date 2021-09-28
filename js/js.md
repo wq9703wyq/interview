@@ -4,18 +4,19 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-14 18:42:07
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-28 00:08:04
+ * @LastEditTime: 2021-09-28 00:18:38
 -->
 - [x] call、bind、apply手写
 - [x] 手写节流、防抖
 - [ ] 观察者、订阅/发布模式
 - [x] 匿名函数
 - [ ] 阶乘
-- [ ] 原型
+- [x] 原型
 - [x] 箭头函数
 - [x] 作用域链
 - [x] 柯里化
 - [x] 执行上下文
+- [ ] class
 
 
 1. ## [call、apply](./call-bind-apply/index.js)、[bind](./call-bind-apply/bind.js)

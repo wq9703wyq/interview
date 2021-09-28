@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-27 00:58:50
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-27 23:17:38
+ * @LastEditTime: 2021-09-28 23:33:41
  */
 
 function throttle(fn, wait) {

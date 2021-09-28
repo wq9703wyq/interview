@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-27 01:52:54
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-28 00:01:24
+ * @LastEditTime: 2021-09-28 23:41:19
  */
 // 属性只写在构造函数中避免引用类型属性被共用
 function Father(name){
@@ -19,11 +19,11 @@ function Son(name,age){
 	this.age = age;
 }
 
-// 意义不明的写法，Sub.prototype不指向Father.prototype会使访问sayName多访问一层实例
+// 意义不明的写法，new实例使Sub.prototype被混入Father构造函数执行的内容，实例访问sayName需要遍历多余的内容
 Sub.prototype = new Father();
 
 // Sub.prototype = Object.create(Father.prototype);
-// Sub.prototype.constructor = Sub;
+Sub.prototype.constructor = Sub;
 
 Son.prototype.sayAge = function(){
 	alert(this.age);
