@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-10-02 00:26:36
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-10-05 00:00:33
+ * @LastEditTime: 2021-10-06 22:24:09
 -->
 
 ## 什么是 ***[this](https://tc39.es/ecma262/#sec-this-keyword)*** ?
@@ -74,3 +74,41 @@ setTimeout(function() {
     也就是说
     > 1. 直接调用， ***this*** 取之于执行 ***eval*** 的执行上下文
     > 2. 间接调用，***this*** 取之于 <u>globalThis</u>
+
+## 4. function Environment Record
+函数调用分为两类AO， [EvaluateCall]()、[EvaluateNew]() 分别对应四种函数调用的语法：  
+
+- [EvaluateCall]():
+  - [Normal function calls]()
+  - [Optional chaining calls]()
+  - [Tagged templatesd]()
+- [EvaluateNew]():
+  - [Constructor invocations]()
+
+
+以上四种函数调用在最后都会调用 AO [Call]()，而 [Call]() 在最后也会调用函数的内部方法 [\[\[Call\]\]]()，[\[\[Call\]\]]() 就是执行函数的实际行为。在 [\[\[Call\]\]]() 中会调用 [PrepareForOrdinaryCall]() 来为函数调用新建*函数环境记录* [NewFunctionEnvironment](https://tc39.es/ecma262/#sec-newfunctionenvironment)，~~这里面根据被调用函数F的 [[[ThisMode]]]() 是否为lexcial (lexcial一般为箭头函数) 设置 [[]]~~，随后 [[[Call]]]()会调用 [[[OrdinaryCallBindThis]]]() 来决定 [[[ThisValue]]]()，这里面主要看第2、5、6条
+>2. If thisMode is lexical, return NormalCompletion(undefined).  
+>     - 如果 thisMode 是 lexcial，不执行后续的AO [BindThisValue]()
+>     - 对应了箭头函数没有 ***this*** 的现象
+
+>5. If thisMode is strict, let thisValue be thisArgument.
+>     - 如果 thisMode 是 strice，[[[ThisValue]]]() 只取 thisArgument
+>     - 对应了在严格模式下，语法上函数调用不取对象时 ***this*** 为 null 的现象
+
+> 6. Else,  
+>     1. If thisArgument is undefined or null, then  
+>         1. Let globalEnv be calleeRealm.[[GlobalEnv]].
+>         2. Assert: globalEnv is a global Environment Record.
+>         3. iii. Let thisValue be globalEnv.[[GlobalThisValue]].
+>     2. Else,
+>         1. Let thisValue be ! ToObject(thisArgument).  
+
+只有在 [[[ThisMode]]]() 是 *strict* 或者 *global* 的情况下，才会执行 [BindThisValue]()，将 [[[ThisValue]]]() 绑定到*函数环境记录*.
+
+之后便通过 [GetThisBinding]() 来获取当前 ***当前执行上下文*** 的 ***this***.
+
+以上便是一个粗略的总览，下文会提出数个常见的详细例子。
+
+### [Arrow functions]()
+
+
