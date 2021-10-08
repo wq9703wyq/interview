@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-10-02 00:26:36
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-10-06 22:24:09
+ * @LastEditTime: 2021-10-09 00:01:10
 -->
 
 ## 什么是 ***[this](https://tc39.es/ecma262/#sec-this-keyword)*** ?
@@ -109,6 +109,83 @@ setTimeout(function() {
 
 以上便是一个粗略的总览，下文会提出数个常见的详细例子。
 
-### [Arrow functions]()
+## [Arrow functions]()
+在[箭头函数]()的[实例化]()中，会将函数实例的 [[[ThisMode]]]() 设置为 ***lexcial-this***
+
+#### InstantiateArrowFunctionExpression
+> 5. Let closure be **OrdinaryFunctionCreate**(%Function.prototype%, sourceText, ArrowParameters, ConciseBody, ***lexical-this***, scope, privateScope).
 
 
+#### [OrdinaryFunctionCreate]()
+> 9. If thisMode is ***lexical-this***, set F.[[ThisMode]] to lexical.
+> 10. Else if Strict is true, set F.[[ThisMode]] to strict.
+> 11. Else, set F.[[ThisMode]] to global.
+
+上文也提到 [[[OrdinaryCallBindThis]]]() 对于 [[[ThisMode]]]() 是 ***lexcial*** 的值会直接跳过绑定 ***this*** 环节，因此[箭头函数]()对应的[执行上下文]()是没有自己的 ***this***.
+
+[执行上下文]()通过 [ResolveThisBinding](https://tc39.es/ecma262/#sec-resolvethisbinding) 和 [GetThisEnvironment]() 来获取 ***this***，
+
+#### [GetThisEnvironemnt]()
+> 2. Repeat,
+>     1. Let exists be env.HasThisBinding().
+>     2. If exists is true, return env.
+>     3. Let outer be env.[[OuterEnv]].
+>     4. Assert: outer is not null.
+>     5. Set env to outer.
+
+通过调用 [HasThisBinding]() 来判断当前环境是否有 ***this***，如果没有则查看 [[[OuterEnv]]]() 直到找到可用 ***this***.
+
+也就是说，判断[箭头函数]()中的 ***this*** 指向的是哪个对象只看箭头函数在哪个函数执行，[箭头函数]()的 ***this*** 指向与外部函数一致。
+
+
+## Function properties
+  ```javascript
+  const refObj = {
+    func: function() {
+      console.log(this)
+    }
+  }
+  ```
+  以上对象为例子，以下几种不同调用语法的输出都是 *refObj*
+  - ***refObj.func()***
+  - ***refObj\["func"]()***
+  - ***refObj?.func()***
+  - ***refObj.func?.()***
+  - ***refObj.func``***
+  
+  以最常见的 ***refObj.func()*** 和 ***refObj\["func"\]()*** 为例 ，两者都是语法格式 [CallMemberExpression]() 的具体实例，***refObj.func*** (或者 ***refObj\["func"]***) 是 [MemberExpression]()，***()*** 是 [Arguments]().在解释语义时，会从 [MemberExpression]() 中寻找 [[[Base]]]() 作为 ***this*** 的值.
+
+  ### [Runtime Semantics: Evaluation](https://tc39.es/ecma262/#sec-function-calls-runtime-semantics-evaluation)
+> .  
+> .  
+> .  
+> 2. Let ***memberExpr*** be the MemberExpression of expr.  
+> .  
+> 4. Let ***ref*** be the result of evaluating ***memberExpr***.
+> .  
+> .  
+> .  
+> 9. Return ? [EvaluateCall](https://tc39.es/ecma262/#sec-evaluatecall)(func, ***ref***, arguments, tailCall).
+> ```
+
+  ### [EvaluateCall](https://tc39.es/ecma262/#sec-evaluatecall)
+> 1. If ***ref*** is a Reference Record, then
+>     1. If [IsPropertyReference]()(***ref***) is true, then
+>         1. Let thisValue be [GetThisValue]()(***ref***).
+>     2. Else,
+>         1. Let refEnv be ***ref***.[[Base]].
+>         2. Assert: refEnv is an Environment Record.
+>         3. Let thisValue be refEnv.WithBaseObject().  
+> 2. Else,
+>     1. Let thisValue be undefined.
+.  
+.  
+.  
+> 7. Let result be [Call]()(func, ***thisValue***, argList).
+
+结合来看，[EvaluateCall](https://tc39.es/ecma262/#sec-evaluatecall) 用 [IsPropertyReference]() 判断 [MemberExpression]() （或者说是 ***refObj.func***）是否是某个对象的属性，如果是则 [GetThisValue]() 返回它的 [[[Base]]]() 作为 ***this***.
+
+剩下的 [Optional-chains](https://tc39.es/ecma262/#sec-optional-chains) 和 [Tagged Templates](https://tc39.es/ecma262/#sec-tagged-templates) 都会将 [MemberExpression]() 作为参数传递给 [EvaluateCall]().
+
+
+## Calls without base reference, strice mode, and with
