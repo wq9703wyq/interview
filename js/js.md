@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-14 18:42:07
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-28 00:18:38
+ * @LastEditTime: 2021-10-11 21:28:20
 -->
 - [x] call、bind、apply手写
 - [x] 手写节流、防抖
@@ -16,7 +16,7 @@
 - [x] 作用域链
 - [x] 柯里化
 - [x] 执行上下文
-- [ ] class
+- [x] class
 
 
 1. ## [call、apply](./call-bind-apply/index.js)、[bind](./call-bind-apply/bind.js)

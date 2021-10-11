@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-10-02 00:26:36
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-10-09 00:01:10
+ * @LastEditTime: 2021-10-11 22:25:27
 -->
 
 ## 什么是 ***[this](https://tc39.es/ecma262/#sec-this-keyword)*** ?
@@ -189,3 +189,111 @@ setTimeout(function() {
 
 
 ## Calls without base reference, strice mode, and with
+不带 *base* 的函数调用一般是函数没有作为对象属性时被调用，举个例子:
+```javascript
+function a() {
+  console.log(this);
+}
+a(); // window
+```
+虽然 *a* 输出 *window* 而且也是 *window* 的属性，但是这也算是 ***Calls without base*** 的范围内，这里主要强调的是语法上的差异，如果是 ***window.a()*** 则算是带 *base* ，***Calls without base*** 也常发生在变量传递中，例如：
+```javascript
+const g = (f) => f();
+cosnt h = refObj.func;
+
+g(refObj.func);
+h();
+(0, refObj.func)(); // 返回refObj的func方法后调用
+```
+上文的 [EvaluateCall](https://tc39.es/ecma262/#sec-evaluatecall) 中提到 [IsPropertyReference]() 判断 ***Calls without base*** 语法调用的 [[[Base]]]() 都是 [Global Environment Record]() 因此返回false，进入Else判断：
+> Else,
+> 1. Let refEnv be ref.[[Base]].
+> 2. Assert: refEnv is an Environment Record.
+> 3. Let thisValue be refEnv.WithBaseObject().
+
+因此 ***this*** 的值来自于环境记录的 [WithBaseObject]()，此方法一般都会返回undefined，除非使用了 [with]() 声明块指定了对象。这种方式的调用会导致传递给 [Call]() 的 *thisValue* 为空，而 [OrdinaryCallBindThis]() 在 ***严格模式*** 下只会将 ***this*** 指向 *thisValue* 而不是 ***非严格模式*** 的 *thisValue* || [[[GlobalThisValue]]]()。
+
+
+## .call, .apply, .bind
+[.call]() 和 [.apply]() 都是直接将参数的 ***this*** 传递给 [Call]()，后续的步骤和普通调用函数并没有什么不同。
+
+[.bind]() 则会通过 [BoundFunctionCreate](https://tc39.es/ecma262/#sec-boundfunctioncreate) 创建一个新的函数，新函数有自己单独实现的 [[[Call]]]() 和 [[BoundThis]] 用于存储参数 ***this***
+
+需要注意的是，在 [OrdinaryCallBindThis]() 中的第6.b中就把 ***this*** 转化成对象，也就是说如果在调用 [.call]() 时传入非对象的String、Number等数据，都会被转化成对象格式，例如：
+```javascript
+function fnc() {
+  console.log(this);
+}
+var s = new String("s");
+fnc.call(s); // String {"s"}
+fnc.call("a"); // String {"a"}
+```
+
+## Constructors，classes and new
+
+***new*** 语法创建对象执行 [EvaluateNew](https://tc39.es/ecma262/#sec-evaluatenew) 并将构造函数和参数传递给 [Construct]() 并最终调用内部方法 [[[Construct]]](). 
+[[[Construct]]]() ， 如果构造函数是一个 ***base*** 类型的函数(非 class extends) 调用 [OrdinaryCreateFromConstructor](https://tc39.es/ecma262/#sec-ordinarycreatefromconstructor) 生成继承构造函数 ***prototype*** 的对象，并将该对象用作 [OrdinaryCallBindThis]() 的 ***this*** 参数绑定到该执行上下文，之后执行函数内容并返回对象。
+需要注意的是，在 ***class*** 中定义的方法都是严格模式,
+
+```javascript
+class A{
+  m1(){
+    return this;
+  }
+  m2(){
+    const m1 = this.m1;
+    
+    console.log(m1());
+  }
+}
+
+new A().m2(); // without base 调用且[[OuterEnv]]是global, 因此严格模式下是undefined
+```
+
+## super
+上面提到了 ***base*** 类型的构造函数，相反的则是 ***derived*** 类型，主要是通过 [extends]() 继承父类的子类，子类在执行 ***new*** 语法时和 ***base***类 不同的是不会第一次 [Construct]() 生成对象作为 ***this*** 绑定在执行上下文，而是要通过 [super]() 时再次执行 [Construct]() 来执行 ***base*** 父类的构造函数，并将返回的对象作为 ***this*** 绑定在当前执行环境，所以子类里在调用 [super] 前都无法使用 ***this***.
+```javascript
+class Super {
+  constructor(a) {
+    this.a = a; 
+  }
+}
+class Sub extends Super {
+  constructor(a, b) {
+    // this.b = b; 
+    super(a);
+    this.b = b;
+  }
+}
+
+const instance = new Sub(1, 2);
+console.log(instance); // Sub {a: 1, b: 2}
+```
+
+## 5. Evaluating class fields
+[static]() 字段允许在类声明体内定义只能由 ***class*** 本身调用的变量，[static]() 声明的变量都会在 [ClassDefinitionEvaluation]() 被收集进待处理静态元素队列，并在最后绑定在 ***class*** 本身上.
+> 31. For each element elementRecord of staticElements, do
+>     1. If elementRecord is a ClassFieldDefinition Record, then
+>         1. Let result be DefineField(F, elementRecord).  
+> ....
+
+非 ***static*** 的声明则存入 [[[Fields]]]() 中，等待之后执行 [[[Construct]]]() 取出来绑定在新建对象上。
+
+因此可以得知，***static*** 声明中的 ***this*** 都是直接指向 ***class***，而非 ***static*** 的 ***this*** 则是被当作构造函数的内容而指向新建对象。
+
+```javascript
+class Demo{
+  a = this;
+  b() {
+    return this;
+  }
+  static c= this;
+  static d() {
+    return this;
+  }
+}
+
+const demo = new Demo();
+console.log(demo.a, demo.b()); // demo demo
+console.log(Demo.c, Demo.d()); // Demo Demo
+```
