@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-14 18:42:07
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-10-11 21:28:20
+ * @LastEditTime: 2022-01-25 02:21:40
 -->
 - [x] call、bind、apply手写
 - [x] 手写节流、防抖
@@ -17,7 +17,17 @@
 - [x] 柯里化
 - [x] 执行上下文
 - [x] class
-
+- [x] this
+- [ ] 垃圾回收机制 
+- [ ] webCompoments
+- [ ] react
+- [x] 深拷贝
+- [x] 左右布局
+- [x] promise
+- [ ] http2
+- [x] 检查页面性能方案
+- [ ] 强缓存更新资源
+- [ ] parcel名字hash
 
 1. ## [call、apply](./call-bind-apply/index.js)、[bind](./call-bind-apply/bind.js)
 2. ## 节流 throttle、防抖 debounce
@@ -30,6 +40,8 @@
    2. 箭头函数没有自己arguments，但是可以用...args来代替参数列表
 5. ## [柯里化](./createCurry/index.js)
    > createCurry，接受一个函数A作为参数，并对A进行包装后返回一个函数B，并且函数B能够处理A函数的剩余参数  
+   > 优点：  
+   > 1. 收集参数，延时处理
 
 6. ## ~~[作用域链](./scopeChain/index.js)~~
   - > ~~ES6前只有 全局作用域 和 函数作用域，ES6新增 let 、const 增加了块级作用域；全局 > 函数 > 块级~~
@@ -86,20 +98,40 @@
             - 除了上述的情况之外，其他在全局环境中的声明都包含在了declarative Environment Record中，例如全局环境下的let, const，class语句。
 
 9. ## [原型]()
-   > ### Each **constructor** is a function that has a property named "prototype" that is used to implement *prototype-based inheritance* and *shared properties*.
-       每一个[构造函数](#constructor)都有一个叫 **prototyoe** 的属性用于基于原型的继承和共享属性。<br/>
+   > ### Each **constructor** is a function that has a property named "prototype" that is used to implement *prototype-based inheritance* and *shared properties*.  
+
+   每一个[构造函数](#constructor)都有一个叫 **prototyoe** 的属性用于基于原型的继承和共享属性。<br/>
 
    <br/>
 
-   > ### Every object created by a constructor has an implicit reference (called the object's prototype) to the value of its constructor's "**prototype**" property. Furthermore, a prototype may have a non-null implicit reference to its prototype, and so on; this is called the prototype chain. 
-       所有由构造函数创造的对象都有一个隐式引用(\_\_proto__)指向构造函数的 **prototype** 属性。并且，一个 **prototype** 也拥有一个非空的隐式引用(\_\_proto__)指向构建该**prototype**对象的构造函数的**prototype**，这就是原型链
+   > ### Every object created by a constructor has an implicit reference (called the object's prototype) to the value of its constructor's "**prototype**" property. Furthermore, a prototype may have a non-null implicit reference to its prototype, and so on; this is called the prototype chain.  
+   
+   所有由构造函数创造的对象都有一个隐式引用(\_\_proto__)指向构造函数的 **prototype** 属性。并且，一个 **prototype** 也拥有一个非空的隐式引用(\_\_proto__)指向构建该**prototype**对象的构造函数的**prototype**，这就是原型链
    
 10. ## [<span id="constructor">构造函数</span>]()
-   > ### A function object is an object that supports the [[Call]] internal method. A constructor is an object that supports the [[Construct]] internal method. Every object that supports [[Construct]] must support [[Call]]; that is, every constructor must be a function object. Therefore, a constructor may also be referred to as a *constructor function* or *constructor function object*.  
-     一个函数对象是支持内部[[Call]]方法的对象。**constructor** 是一个支持内部[[Construct]]方法的对象。每一个支持[[Construct]]的对象都必定支持[[Call]]，也就是说每一个 **constructor** 都是一个函数对象。因此一个 **constructor** 可以称作 *constructor function* 或者 *constructor function object*
+   > ### A function object is an object that supports the [[Call]] internal method. A constructor is an object that supports the [[Construct]] internal method. Every object that supports [[Construct]] must support [[Call]]; that is, every constructor must be a function object. Therefore, a constructor may also be referred to as a *constructor function* or *constructor function object*.   
+
+   一个函数对象是支持内部[[Call]]方法的对象。**constructor** 是一个支持内部[[Construct]]方法的对象。每一个支持[[Construct]]的对象都必定支持[[Call]]，也就是说每一个 **constructor** 都是一个函数对象。因此一个 **constructor** 可以称作 *constructor function* 或者 *constructor function object*
+   
 11. ## 古典继承
     1.  [盗用构造函数继承](./classical-extend/constructor-stealing.js)
     2.  [原型继承](./classical-extend/prototype-extend.js)
     3.  [组合继承](./classical-extend/combination-extend.js)
     4.  [寄生式继承](./classical-extend/parasitic-inheritance.js)
     5.  [寄生组合继承](./classical-extend/parasitic-combination.js)
+12. ## [深拷贝](./deepClone/index.js)
+13. ## [Promise](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+    1.  一个 **Promise** 必然处于以下几种状态之一:
+        1.  待定 *(pending)*：初始状态，既没有兑现，也没有拒绝
+        2.  已兑现 *(fulfilled)*：意味着操作成功完成
+        3.  已拒绝 *(rejected)*：意味着操作失败
+    2. **Promise.*resolve***，接受一个参数 **thenable** 若参数非空则返回的 **Promise** 对象则会跟随这个 **thenable** 的对象并采用它的最终状态；将 **Promise** 对象状态改变为 *(fulfilled)*，同时在 **Promise.*then*** 中：
+       1. **return**， **return Promise.*resolve***
+       2. 无 **return**
+       3. 都会改变状态为 *(fulfilled)*, [例子](./Promise/resolve.js)
+    3.  **Promise.*reject***，将 **Promise** 对象状态改变为 *(rejected)*，同时在 **Promise.*then*** 中：
+        1.  **thorw**
+        2.  **return Promise.*reject***
+        3.  都会改变状态为 *(rejected)*, [例子](./Promise/reject.js)
+    4. 拓展题: [并行限制Promise](./Promise/parallelPromise.js)
+    5. 拓展题: [并行限制Promise/字节版](./Promise/parallelPromise.js)

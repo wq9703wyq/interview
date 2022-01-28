@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-20 23:42:21
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-21 20:43:04
+ * @LastEditTime: 2021-12-26 19:15:52
  */
 
 function createCurry(func, ...args) {
@@ -29,9 +29,9 @@ const _test = createCurry(test);
 console.log(_test(1)(2)(3));
 
 // 实现一个add方法，使计算结果能满足如下的预期：
-// add(1)(2)(3) = 6
-// add(1, 2, 3)(4) = 10
-// add(1)(2)(3)(4)(5) = 15
+// add(1)(2)(3)() = 6
+// add(1, 2, 3)(4)() = 10
+// add(1)(2)(3)(4)(5)() = 15
 
 
 function add(...args) {

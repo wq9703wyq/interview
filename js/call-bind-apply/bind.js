@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-20 19:14:32
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-20 19:20:43
+ * @LastEditTime: 2022-01-17 12:42:04
  */
 Function.prototype.bindCopy = function (context, ...args) {
   const fn = this;
@@ -32,7 +32,7 @@ Point.prototype.count = function () {
 }
 
 var emptyObj = {};
-var XPoint = Point.bind(emptyObj, 1);
+var XPoint = Point.bindCopy(emptyObj, 1);
 XPoint(3);
 emptyObj.count = Point.prototype.count;
 emptyObj.count();

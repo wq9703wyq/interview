@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-20 22:04:56
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-20 23:26:07
+ * @LastEditTime: 2022-10-30 01:06:55
  */
 var obj = {
   x: 4,
@@ -64,3 +64,5 @@ function argsArrow() {
 }
 
 argsArrow(3,4,5)(1,2);
+
+

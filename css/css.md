@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-13 22:22:28
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-20 17:10:15
+ * @LastEditTime: 2021-12-25 22:08:46
 -->
 
 1. ## p标签默认的 display 和 position 属性分别是什么
@@ -84,8 +84,8 @@
     4. > fixed: 脱离正常文档流，top、right、bottom、left相对于窗口定位，滚动时不会移动；当祖先元素的transform，perspective，filter非none时，容器则由视口改为改组件
 
 11. ## 介绍一样的 css 的 important 和 link 的区别
-> link 会将 @important 的同级样式替换
-> ?
+    1. > link 会将 @important 的同级样式替换  
+    2.  > 由于 @important 是写在 css 文件中，所以可能会引起递归引用的问题，导致浏览器下载 css 文件时间被拉长
 
 12. ## 若是实现一个 div 在 10s 内向左移动 500px 的动画，可以怎么实现。各有什么优缺点。
     1. > 设置transition: 10s，用js修改他的margin或者left；可拓性较强，可以任意设置动画的移动方向与距离，并且搭配transform使用不改变其他元素布局，减少重排带来的消耗；动画细节不容易控制，例如速度曲线，又或者transition是对大部分样式都有影响，若一起设置移动500px和变宽200px，结果就会变成变移动边变宽，除非js设置先后顺序
@@ -100,4 +100,4 @@
    
       - > 参与折叠边距中若包含负值，折叠后的外边距取最大的正边距和最小的负边距之和；例如-13px 8px 100px 叠在一起，则取100 - 13 = 87px
       - 如果参与折叠的外边距都为负，则取最小负边距的值
-      - 外边距重叠只会发生在 Block-Level 的元素，floating 和 absolutely positioned 的元素则不会发生外边距重叠
+      - 与是否同属于一个 BFC 无关，外边距重叠只会发生在 Block-Level 的元素，floating 和 absolutely positioned 的元素则不会发生外边距重叠，在同一个 BFC 内 inline-block 也不会和其他 Block-Level 重叠外边距

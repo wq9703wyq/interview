@@ -4,14 +4,14 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-27 23:19:56
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-09-27 23:41:21
+ * @LastEditTime: 2021-12-26 22:07:10
  */
 
 // 基于对象A，创造出另外一个继承A所有属性和方法的新对象，并以某种方式添加新的属性
 // 与原型继承一样，引用类型的数据都会在实例间共享
 // 与借用构造继承一样，在构造函数中定义的方法都没有办法复用
 function createAnother(original) {
-  let clone = Object.create(original);
+  let clone = Object.create(original.prototype);
   clone.sayHi = function() {
     console.log("hi");
   }
