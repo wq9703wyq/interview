@@ -16,5 +16,6 @@ function throttle(fn, wait) {
         timer = null
       }, wait)
     }
+    return timer
   }
 }

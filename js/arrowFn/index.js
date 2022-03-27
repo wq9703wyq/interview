@@ -4,11 +4,11 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-20 22:04:56
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2022-10-30 01:06:55
+ * @LastEditTime: 2022-02-16 14:19:05
  */
 var obj = {
   x: 4,
-  count: () => {
+  count: function() {
     console.log(`obj: ${this.x}`)
   }
 }

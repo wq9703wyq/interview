@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-20 19:14:32
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2022-01-17 12:42:04
+ * @LastEditTime: 2022-02-16 12:59:37
  */
 Function.prototype.bindCopy = function (context, ...args) {
   const fn = this;
@@ -37,7 +37,7 @@ XPoint(3);
 emptyObj.count = Point.prototype.count;
 emptyObj.count();
 var YPoint = new XPoint(2);
-YPoint.count();
+YPoint.count(); // 没有对new操作进行处理，则YPoint无法继承Point的方法，输出undefined, undefined
 
 console.log(`YPoint instanceof XPoint: ${YPoint instanceof XPoint}`)
 console.log(`YPoint instanceof Point: ${YPoint instanceof Point}`)

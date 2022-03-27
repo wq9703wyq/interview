@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-14 18:42:07
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2022-01-25 02:21:40
+ * @LastEditTime: 2022-02-17 22:45:17
 -->
 - [x] call、bind、apply手写
 - [x] 手写节流、防抖
@@ -135,3 +135,9 @@
         3.  都会改变状态为 *(rejected)*, [例子](./Promise/reject.js)
     4. 拓展题: [并行限制Promise](./Promise/parallelPromise.js)
     5. 拓展题: [并行限制Promise/字节版](./Promise/parallelPromise.js)
+14. ## 设计模式
+    1.  [发布 - 订阅](./eventEmitter/index.js)
+15. ## 二维数组去重
+16. ## 闭包
+    1. ### 好处
+       1. 使变量不必挂载在全局上，避免变量会被轻易修改、污染

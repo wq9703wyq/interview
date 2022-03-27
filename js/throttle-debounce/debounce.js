@@ -4,7 +4,7 @@
  * @Author: 鹿角兔子
  * @Date: 2021-09-20 19:51:53
  * @LastEditors: 鹿角兔子
- * @LastEditTime: 2021-12-26 19:05:32
+ * @LastEditTime: 2022-02-16 14:12:01
  */
 function debounce(fn, wait) {
   var timer;
@@ -17,5 +17,6 @@ function debounce(fn, wait) {
       fn.call(context, ...args);
       timer = null;
     }, wait);
+    return timer
   }
 }
