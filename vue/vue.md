@@ -59,5 +59,18 @@
       - beforeunmounted: 实例被销毁前调用，清除定时器
       - unMounted: 销毁实例，清除实例与其他实例的链接
 
+# 5. v-model 简述
+   1. vue 提供双向绑定指令 `v-model` ，用于简化 `:value` 和 `@input` 的数值绑定和事件监听代码
+   2. 对于不同的表单元素 `v-model` 会监听不同的事件，
+      - input: @input
+      - text、textarea: @input
+      - checkbox、radio: @change
+      - select: @change
+   3. v2 和 v3 的区别
+      -  v2 中提供自定义选项 `model` 用于指定组件绑定的 `prop` 和监听的事件 `event`
+      -  v3 中由组件定义的 `update:modelvalue` 为默认绑定，并且可以额外绑定 `update:[prop]` 来绑定多个 `prop`，上级元素则使用 `v-model:[prop]` 来指定监听数据
 
-
+# 6. 子组件能否改变父组件数据
+   1. 子组件可以通过 $parent，provide/inject，$emit 去改变父组件数据
+   2. 但是根据官方文档，所有 props 都遵循 `单向绑定` 原则，即 props 只能因为父组件更新而变化，由父组件自然地流向子组件，而不能由子组件直接修改 props 而使父组件更新，防止数据流向变得混乱(特别是在多个子组件的组件中)
+   3. 同理，使用 $parent 去直接修改父组件的状态也是慎之又慎
