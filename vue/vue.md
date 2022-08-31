@@ -144,3 +144,10 @@
    2. 由于 vue 中更新响应式数据时，最终的 DOM 的更新并不是同步的，而是 Vue 会将这些数据更新存到一个队列中并等待下一个 tick 再执行
    3. v2 中 `nextTick` 将我们传入的函数存进一个队列中，并且该队列执行时间比更新视图要晚，因此 `nextTick` 中的函数自然能拿到更新后的视图，v2 中通过 Promise、MutationObserver、setImmediate、setTimeout 来执行异步任务
    4. v3 则直接通过 Promise 来实现异步，v3 中如果 `nextTick` 有传入函数则通过 `then` 来挂载传入函数，如果传入为空则直接返回主任务队列的 Promise
+
+# 15. watch 和 computed 的区别
+   1. ``computed`` 用于 **描述响应式数据的复杂逻辑**，而 ``watch`` 则是 **随响应式数据变化而执行回调函数**
+   2. ``computed`` 一般会返回一个只读 ``ref`` 复用于模板或者其他函数上，但如果额外传入 ``set`` 方法获得可写的 ``ref``，但就算 ``computed`` 能够修改其他数据，也不应该在 ``computed`` 做 **异步操作或者修改DOM**，因为这会破坏 ``computed`` 只计算属性和返回值的原则，并且异步操作还会让 ``computed`` 的使用变得更加复杂
+   3. ``watch`` 监听一个响应式数据，并在他状态变化后执行一些额外的dom操作或者异步操作，因此复杂逻辑应该在 ``watch`` 中实现而不是 ``computed``，同时由于 ``computed`` 返回的 ``ref`` 本身就是一个响应式数据，因此 ``watch`` 也能够监听 ``computed``
+   4. ``computed`` 由于存在缓存的特性，只要依赖的数据不发生变化就不会重新计算，因此相比于使用函数每次 `getter` 重新计算，`computed`有更好的性能
+   
