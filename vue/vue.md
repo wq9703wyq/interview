@@ -150,4 +150,11 @@
    2. ``computed`` 一般会返回一个只读 ``ref`` 复用于模板或者其他函数上，但如果额外传入 ``set`` 方法获得可写的 ``ref``，但就算 ``computed`` 能够修改其他数据，也不应该在 ``computed`` 做 **异步操作或者修改DOM**，因为这会破坏 ``computed`` 只计算属性和返回值的原则，并且异步操作还会让 ``computed`` 的使用变得更加复杂
    3. ``watch`` 监听一个响应式数据，并在他状态变化后执行一些额外的dom操作或者异步操作，因此复杂逻辑应该在 ``watch`` 中实现而不是 ``computed``，同时由于 ``computed`` 返回的 ``ref`` 本身就是一个响应式数据，因此 ``watch`` 也能够监听 ``computed``
    4. ``computed`` 由于存在缓存的特性，只要依赖的数据不发生变化就不会重新计算，因此相比于使用函数每次 `getter` 重新计算，`computed`有更好的性能
-   
+
+# 16. 从 0 到 1 构建一个vue项目
+   1. 由于 `vite` 有更多的社区支持，所以会选择 `vite` 来创建项目
+   2. 接着会引入 vue 常用的插件，使用 `vue-router` 来控制路由，`pinia` 来做全局store，ui库则使用 `element-plus`、`antd-vue`又或者 `vuetify`，通信方面使用 `axios`
+   3. 代码规范结合使用 `prettier`、`eslint`、`stylelint` 和他们各自的 vue 推荐配置
+   4. 提交规范则使用 `husky` 定义钩子执行 `commitlint` 和 `lint-staged`
+
+# 17. effect
