@@ -157,4 +157,47 @@
    3. 代码规范结合使用 `prettier`、`eslint`、`stylelint` 和他们各自的 vue 推荐配置
    4. 提交规范则使用 `husky` 定义钩子执行 `commitlint` 和 `lint-staged`
 
-# 17. effect
+# 17. vue3 响应式的实现
+   1. 与 vue2 中 `Object.defineProperty` 劫持对象的读写类似，vue3 中使用 `proxy` 来劫持对象的读写
+   2. 在触发 `getter` 时， 执行 `track` 收集依赖，
+      1. 收集的依赖由会存储在由 `上层WeakMap 和 下层Map` 构成的特殊结构中，
+         - `WeakMap` 的键是原始对象 **target**，`WeakMap` 的值是原始对象 **target** 对应的 `Map`
+         - **target** 的 `Map` 的键是原始对象 **target** 的 **key**，值则是关联 **key** 的副作用函数 `Set`
+         - 使用这种结构的原因是，`WeakMap` 的弱引用特性会在用户对 **target** 没有引用的情况下会由 `垃圾回收器` 直接回收 **target**；但是 `Map` 是强引用类型，即使用户实际上没用引用 **target** ，**target** 也会一直占用内存，最终导致内存溢出
+   3. 在触发 `setter` 时，执行 `trigger` 派发通知收集的副作用函数
+
+# 18. `track` 的优化
+   1. 我们都知道 `v-if` 与 `v-for` 都是在控制元素是否存在，若元素不存在则其中的依赖也没有收集的必要，但是也存在例外的情况：
+   ```html
+      <div v-if="isShow">{{msg}}</div>
+      <button @click="isShow = false"></button>
+
+      <script setup>
+         const isShow = ref(true);
+         const msg = ref("msg")
+      </script>  
+   ```
+   以上例子中，初始化会收集 `msg` 的依赖，但是 `isShow` 为 false 后不渲染 div，收集或者执行 `msg` 依赖就没有意义
+   2. 对于这种情况，就需要及时清除空依赖；为了明确 `effect` 和依赖间的关系，vue3 在每个 `effect` 上添加 `deps` 属性用于存放对应的依赖，有这个关系后，每次执行 `effect` (记为 **A**) 时都会执行 `cleanup` 清除 **A** 上的 `deps` 数组，并且删除 `deps` 数组中的每一个依赖收集的 **A**；之后再次触发 `track` 时再将  **A** 收集起来，这样子就能保持收集来的依赖都是有意义的
+   3. 在实际开发中，经常发生 **effect嵌套** 的情况,
+   ```javascript
+      const counter = reactive({ 
+         num: 0, 
+         num2: 0 
+      }) 
+      function logCount() { 
+         effect(logCount2) 
+         console.log('num:', counter.num) 
+      } 
+      function count() { 
+         counter.num++ 
+      } 
+      function logCount2() { 
+         console.log('num2:', counter.num2) 
+      } 
+      effect(logCount) 
+      count()
+   ```
+   如果以简单的 `activeEffect` 赋值来决定当前活跃 `effect`，那么 `activeEffect` 就会跳过 **num** 指向 **num2**，为了解决这中问题，改用栈 **effectStack** 来存储，每当 `effect` 执行完毕就弹出栈，这样就能收集到每一个 `effect`
+
+# 19. `trigger` 的优化
