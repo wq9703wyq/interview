@@ -177,8 +177,8 @@
          const msg = ref("msg")
       </script>  
    ```
-   以上例子中，初始化会收集 `msg` 的依赖，但是 `isShow` 为 false 后不渲染 div，收集或者执行 `msg` 依赖就没有意义
-   2. 对于这种情况，就需要及时清除空依赖；为了明确 `effect` 和依赖间的关系，vue3 在每个 `effect` 上添加 `deps` 属性用于存放对应的依赖，有这个关系后，每次执行 `effect` (记为 **A**) 时都会执行 `cleanup` 清除 **A** 上的 `deps` 数组，并且删除 `deps` 数组中的每一个依赖收集的 **A**；之后再次触发 `track` 时再将  **A** 收集起来，这样子就能保持收集来的依赖都是有意义的
+   以上例子中，初始化会收集 `msg` 的依赖，但是 `isShow` 为 false 后不渲染 div，收集或者执行 `msg` 依赖就没有意义  
+   2. 对于这种情况，就需要及时清除空依赖；为了明确 `effect` 和依赖间的关系，vue3 在每个 `effect` 上添加 `deps` 属性用于存放对应的依赖，有这个关系后，每次执行 `effect` (记为 **A**) 时都会执行 `cleanup` 清除 **A** 上的 `deps` 数组，并且删除 `deps` 数组中的每一个依赖收集的 **A**；之后再次触发 `track` 时再将  **A** 收集起来，这样子就能保持收集来的依赖都是有意义的  
    3. 在实际开发中，经常发生 **effect嵌套** 的情况,
    ```javascript
       const counter = reactive({ 
@@ -200,4 +200,7 @@
    ```
    如果以简单的 `activeEffect` 赋值来决定当前活跃 `effect`，那么 `activeEffect` 就会跳过 **num** 指向 **num2**，为了解决这中问题，改用栈 **effectStack** 来存储，每当 `effect` 执行完毕就弹出栈，这样就能收集到每一个 `effect`
 
-# 19. `trigger` 的优化
+# 19. 为什么vue3使用 Proxy 而不是 Object.defineProperty?
+   1. 实际上脱离需求，`Proxy` 的性能不如 `Object.defineProperty` [详见](https://thecodebarbarian.com/thoughts-on-es6-proxies-performance)，但 `Proxy` 给 vue3 带来的并不是表面上代码执行速度提升，而是允许 vue3 以更合理的流程来实现响应式数据
+   2. 由于 `Object.defineProperty` 是对对象某个已经存在的属性添加对应的 `getter` 和 `setter`，所以只能监听到这个属性值的变化，而不能监听属性的增删，进而导致在初始化时，就必须对整个data进行递归遍历处理，并且数组和对象的新增属性也都无法监听到，需要用特殊的api去进行修改才会更新
+   3. 但 `Proxy` 是对整个对象的劫持，无论是属性的值变化还是增删都能监听到，这使得 vue 在初始化时只需要对最外层做处理，内层的属性在被访问到时再作监听，这其实一种延时定义子对象响应式的实现，在性能上有一定的提升，另外 `Proxy` 也解决了 vue2 中数组和对象增删属性的问题，所以 `Proxy` 也就成了自然而然的选择
